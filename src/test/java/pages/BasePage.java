@@ -1,6 +1,5 @@
 package pages;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -23,6 +22,11 @@ public abstract class BasePage {
     public void jsClick(WebElement element) {
         JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("arguments[0].click();", element);
+    }
+
+    public void jsZoom(int zoom) {
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript(String.format("document.body.style.zoom='%d%%'"), zoom);
     }
 
     public abstract BasePage isPageOpened();

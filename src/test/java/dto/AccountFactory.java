@@ -12,12 +12,18 @@ public class AccountFactory {
                 .withPhone(FAKER.phoneNumber().cellPhone())
                 .withRating("Cold")
                 .build();
-
     }
 
-    public static Account getAccountOnlyWithName() {
+    public static Account getMaxAccount() {
         return new Account.Builder()
                 .withName(FAKER.company().name())
+                .withPhone(FAKER.phoneNumber().cellPhone())
+                .withAccountSite(FAKER.company().url())
+                .withEmployees(FAKER.number().digit())
+                .withSicCode(FAKER.number().digit())
+                .withTickerSymbol(FAKER.currency().code())
+                .withFax(FAKER.phoneNumber().cellPhone())
+                .withAnnualRevenue(FAKER.number().digit())
                 .build();
     }
 }

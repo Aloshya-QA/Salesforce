@@ -5,6 +5,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import wrappers.Input;
+import wrappers.Picklist;
+import wrappers.TextArea;
+
+import static wrappers.AccountField.*;
 
 public class NewAccountModal extends BasePage {
 
@@ -21,6 +25,16 @@ public class NewAccountModal extends BasePage {
 
     private NewAccountModal input(String label, String value) {
         new Input(driver, label).fill(value);
+        return this;
+    }
+
+    private NewAccountModal picklist(String label, String value) {
+        new Picklist(driver, label).select(value);
+        return this;
+    }
+
+    private NewAccountModal textArea(String label, String value) {
+        new TextArea(driver, label).fill(value);
         return this;
     }
 
@@ -54,8 +68,14 @@ public class NewAccountModal extends BasePage {
 
     public NewAccountModal createAccount(Account account) {
         return new NewAccountModal(driver)
-                .input("Account Name", account.getName())
-                .input("Phone", account.getPhone())
+                .input(ACCOUNT_NAME.getLabel(), account.getName())
+                .input(PHONE.getLabel(), account.getPhone())
+                .input(ACCOUNT_SITE.getLabel(), account.getAccountSite())
+                .input(EMPLOYEES.getLabel(), account.getEmployees())
+                .input(SIC_CODE.getLabel(), account.getSicCode())
+                .input(TICKER_SYMBOL.getLabel(), account.getTickerSymbol())
+                .input(FAX.getLabel(), account.getFax())
+                .input(ANNUAL_REVENUE.getLabel(), account.getAnnualRevenue())
                 .build();
     }
 
