@@ -4,8 +4,15 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
+import pages.AccountsPage;
+import pages.HomePage;
+import pages.LoginPage;
+import pages.NewAccountModal;
+import steps.LoginStep;
 import utils.AllureUtils;
 import utils.TestListener;
 
@@ -15,7 +22,11 @@ import java.util.HashMap;
 @Listeners(TestListener.class)
 public class BaseTest {
 
+    private static final Logger log = LoggerFactory.getLogger(BaseTest.class);
     WebDriver driver;
+    LoginStep loginStep;
+    NewAccountModal newAccountModal;
+    AccountsPage accountsPage;
 
     @Parameters({"browser"})
     @BeforeMethod(alwaysRun = true)
@@ -29,6 +40,10 @@ public class BaseTest {
 
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10L));
         driver.manage().window().maximize();
+
+        loginStep = new LoginStep(driver);
+        newAccountModal = new NewAccountModal(driver);
+        accountsPage = new AccountsPage(driver);
     }
 
     private static ChromeOptions getChromeOptions() {
