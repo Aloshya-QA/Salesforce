@@ -5,7 +5,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import wrappers.Input;
-import wrappers.Picklist;
 
 public class NewAccountModal extends BasePage {
 
@@ -15,15 +14,18 @@ public class NewAccountModal extends BasePage {
             SAVE = By.xpath("//button[text()='Save']"),
             SUCCESSFUL_CREATION_POPUP = By.xpath(
                     "//div[@data-aura-class='forceToastMessage']");
-    private final Input
-            accountName = new Input(driver, "Account Name"),
-            accountPhone = new Input(driver, "Phone"),
-            accountFax = new Input(driver, "Fax");
-    private final Picklist
-            accountRating = new Picklist(driver, "Rating");
 
     public NewAccountModal(WebDriver driver) {
         super(driver);
+    }
+
+    private NewAccountModal input(String label, String value) {
+        new Input(driver, label).fill(value);
+        return this;
+    }
+
+    private NewAccountModal build() {
+        return new NewAccountModal(driver);
     }
 
     @Override
@@ -51,10 +53,10 @@ public class NewAccountModal extends BasePage {
     }
 
     public NewAccountModal createAccount(Account account) {
-        accountName.fill(account.getName());
-        accountPhone.fill(account.getPhone());
-        accountRating.select(account.getRating());
-        return this;
+        return new NewAccountModal(driver)
+                .input("Account Name", account.getName())
+                .input("Phone", account.getPhone())
+                .build();
     }
 
     public boolean isAccountCreated() {
