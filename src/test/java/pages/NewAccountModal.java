@@ -55,7 +55,7 @@ public class NewAccountModal extends BasePage {
     @Override
     public NewAccountModal isPageOpened() {
         try {
-            wait.until(ExpectedConditions.visibilityOf((WebElement) click(SAVE_BUTTON)));
+            wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(SAVE_BUTTON))));
             log.info("NewAccountModal is Opened");
         } catch (TimeoutException e) {
             log.error(e.getMessage());
