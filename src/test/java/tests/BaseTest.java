@@ -9,24 +9,25 @@ import org.slf4j.LoggerFactory;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
 import pages.AccountsPage;
-import pages.HomePage;
-import pages.LoginPage;
 import pages.NewAccountModal;
 import steps.LoginStep;
 import utils.AllureUtils;
+import utils.PropertyReader;
 import utils.TestListener;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.HashMap;
 
 @Listeners(TestListener.class)
 public class BaseTest {
 
-    private static final Logger log = LoggerFactory.getLogger(BaseTest.class);
     WebDriver driver;
     LoginStep loginStep;
     NewAccountModal newAccountModal;
     AccountsPage accountsPage;
+    String user = System.getProperty("user", PropertyReader.getProperty("user"));
+    String password = System.getProperty("password", PropertyReader.getProperty("password"));
 
     @Parameters({"browser"})
     @BeforeMethod(alwaysRun = true)
@@ -56,6 +57,9 @@ public class BaseTest {
         options.addArguments("--disable-notifications");
         options.addArguments("--disable-popup-blocking");
         options.addArguments("--disable-infobars");
+        options.addArguments("--disable-blink-features=AutomationControlled");
+        options.setExperimentalOption("excludeSwitches",
+                Collections.singletonList("enable-automation"));
         return options;
     }
 
@@ -64,6 +68,8 @@ public class BaseTest {
         if (ITestResult.FAILURE == result.getStatus()) {
             AllureUtils.takeScreenshot(driver);
         }
-        driver.quit();
+        if (driver != null) {
+            driver.quit();
+        }
     }
 }

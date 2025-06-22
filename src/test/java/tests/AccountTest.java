@@ -15,7 +15,7 @@ public class AccountTest extends BaseTest{
     @Step("Создание аккаунта")
     public void checkCreateAccount() {
         Account account = AccountFactory.getMaxAccount();
-        loginStep.auth("tborodich@tms.sandbox", "Password002!");
+        loginStep.auth(user, password);
         newAccountModal.openPage()
                 .isPageOpened()
                 .createAccount(account)
