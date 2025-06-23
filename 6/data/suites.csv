@@ -1,0 +1,2 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"Проверяет, что пользователь может успешно создать аккаунт через модальное окно.","25040","checkCreateAccount","Surefire suite","Mon Jun 23 16:28:50 GMT 2025","failed","Mon Jun 23 16:29:15 GMT 2025","tests.AccountTest","Surefire test","tests.AccountTest","checkCreateAccount"
