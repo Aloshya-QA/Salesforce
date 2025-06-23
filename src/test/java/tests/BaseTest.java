@@ -1,5 +1,6 @@
 package tests;
 
+import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -10,14 +11,17 @@ import org.testng.annotations.*;
 import pages.AccountsPage;
 import pages.NewAccountModal;
 import steps.LoginStep;
-import utils.AllureUtils;
 import utils.PropertyReader;
+import org.testng.annotations.Listeners;
 import utils.TestListener;
 
 import java.time.Duration;
 import java.util.Collections;
 import java.util.HashMap;
 
+import static utils.AllureUtils.takeScreenshot;
+
+@Log4j2
 @Listeners(TestListener.class)
 public class BaseTest {
 
@@ -84,7 +88,8 @@ public class BaseTest {
     @AfterMethod(alwaysRun = true)
     public void tearDown(ITestResult result) {
         if (ITestResult.FAILURE == result.getStatus()) {
-            AllureUtils.takeScreenshot(driver);
+            log.warn("Test failed. Taking screenshot...");
+            takeScreenshot(driver);
         }
         if (driver != null) {
             driver.quit();
