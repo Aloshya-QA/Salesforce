@@ -7,23 +7,22 @@ public class AccountFactory {
     private final static Faker FAKER = new Faker();
 
     public static Account getAccount() {
-        return new Account.Builder()
-                .withName(FAKER.company().name())
-                .withPhone(FAKER.phoneNumber().cellPhone())
-                .withRating("Cold")
+        return new Account.AccountBuilder()
+                .phone(FAKER.phoneNumber().cellPhone())
+                .rating("Cold")
                 .build();
     }
 
     public static Account getMaxAccount() {
-        return new Account.Builder()
-                .withName(FAKER.company().name())
-                .withPhone(FAKER.phoneNumber().cellPhone())
-                .withAccountSite(FAKER.company().url())
-                .withEmployees(FAKER.number().digit())
-                .withSicCode(FAKER.number().digit())
-                .withTickerSymbol(FAKER.currency().code())
-                .withFax(FAKER.phoneNumber().cellPhone())
-                .withAnnualRevenue(FAKER.number().digit())
+        return new Account.AccountBuilder()
+                .name(FAKER.company().name())
+                .phone(FAKER.phoneNumber().cellPhone())
+                .accountSite(FAKER.company().url())
+                .employees(FAKER.number().digit())
+                .sicCode(FAKER.number().digit())
+                .tickerSymbol(FAKER.currency().code())
+                .fax(FAKER.phoneNumber().cellPhone())
+                .annualRevenue(FAKER.number().digit())
                 .build();
     }
 }

@@ -1,32 +1,36 @@
 package tests;
 
+import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
 import pages.AccountsPage;
-import pages.HomePage;
-import pages.LoginPage;
 import pages.NewAccountModal;
 import steps.LoginStep;
-import utils.AllureUtils;
+import utils.PropertyReader;
+import org.testng.annotations.Listeners;
 import utils.TestListener;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.HashMap;
 
+import static utils.AllureUtils.takeScreenshot;
+
+@Log4j2
 @Listeners(TestListener.class)
 public class BaseTest {
 
-    private static final Logger log = LoggerFactory.getLogger(BaseTest.class);
     WebDriver driver;
     LoginStep loginStep;
     NewAccountModal newAccountModal;
     AccountsPage accountsPage;
+    String user = System.getProperty("user", PropertyReader.getProperty("user"));
+    String password = System.getProperty("password", PropertyReader.getProperty("password"));
 
     @Parameters({"browser"})
     @BeforeMethod(alwaysRun = true)
@@ -35,7 +39,8 @@ public class BaseTest {
             ChromeOptions options = getChromeOptions();
             driver = new ChromeDriver(options);
         } else if (browser.equalsIgnoreCase("firefox")) {
-            driver = new FirefoxDriver();
+            FirefoxOptions options = getFirefoxOptions();
+            driver = new FirefoxDriver(options);
         }
 
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10L));
@@ -56,14 +61,38 @@ public class BaseTest {
         options.addArguments("--disable-notifications");
         options.addArguments("--disable-popup-blocking");
         options.addArguments("--disable-infobars");
+        options.addArguments("--headless");
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--disable-gpu");
+        options.addArguments("--disable-blink-features=AutomationControlled");
+        options.setExperimentalOption("excludeSwitches",
+                Collections.singletonList("enable-automation"));
+        return options;
+    }
+
+    private static FirefoxOptions getFirefoxOptions() {
+        FirefoxOptions options = new FirefoxOptions();
+        options.addArguments("--incognito");
+        options.addArguments("--disable-notifications");
+        options.addArguments("--disable-popup-blocking");
+        options.addArguments("--disable-infobars");
+        options.addArguments("--headless");
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--disable-gpu");
+        options.addArguments("--disable-blink-features=AutomationControlled");
         return options;
     }
 
     @AfterMethod(alwaysRun = true)
     public void tearDown(ITestResult result) {
         if (ITestResult.FAILURE == result.getStatus()) {
-            AllureUtils.takeScreenshot(driver);
+            log.warn("Test failed. Taking screenshot...");
+            takeScreenshot(driver);
         }
-        driver.quit();
+        if (driver != null) {
+            driver.quit();
+        }
     }
 }

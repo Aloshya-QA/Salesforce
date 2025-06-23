@@ -1,26 +1,36 @@
 package pages;
 
 import dto.Account;
+import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.testng.Assert;
+import wrappers.Button;
 import wrappers.Input;
 import wrappers.Picklist;
 import wrappers.TextArea;
 
 import static wrappers.AccountField.*;
 
+@Log4j2
 public class NewAccountModal extends BasePage {
 
-    private static final By
-            CANCEL_BUTTON = By.xpath("//button[text()='Cancel']"),
-            SAVE_AND_NEW_BUTTON = By.xpath("//button[text()='Save & New']"),
-            SAVE = By.xpath("//button[text()='Save']"),
-            SUCCESSFUL_CREATION_POPUP = By.xpath(
-                    "//div[@data-aura-class='forceToastMessage']");
+    private static final String
+            CANCEL_BUTTON = "//button[text()='Cancel']",
+            SAVE_AND_NEW_BUTTON = "//button[text()='Save & New']",
+            SAVE_BUTTON = "//button[text()='Save']",
+            SUCCESSFUL_CREATION_POPUP = "//div[@data-aura-class='forceToastMessage']";
 
     public NewAccountModal(WebDriver driver) {
         super(driver);
+    }
+
+    private NewAccountModal click(String xpath) {
+        new Button(driver, xpath).click();
+        return this;
     }
 
     private NewAccountModal input(String label, String value) {
@@ -44,29 +54,40 @@ public class NewAccountModal extends BasePage {
 
     @Override
     public NewAccountModal isPageOpened() {
-        wait.until(ExpectedConditions.visibilityOf(driver.findElement(SAVE)));
+        try {
+            wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(SAVE_BUTTON))));
+            log.info("NewAccountModal is Opened");
+        } catch (TimeoutException e) {
+            log.error(e.getMessage());
+            Assert.fail("Page isn't opened");
+        }
         return this;
     }
 
     @Override
     public NewAccountModal openPage() {
+        log.info("Opening NewAccountModal");
         driver.get("https://tms9-dev-ed.develop.lightning.force.com/lightning/o/Account/new");
         return this;
     }
 
     public void clickCancelButton() {
-        driver.findElement(CANCEL_BUTTON).click();
+        log.info("Click Cancel Button");
+        click(CANCEL_BUTTON);
     }
 
     public void clickSaveAndNewButton() {
-        driver.findElement(SAVE_AND_NEW_BUTTON).click();
+        log.info("Click Save&New Button");
+        click(SAVE_AND_NEW_BUTTON);
     }
 
     public void clickSaveButton() {
-        driver.findElement(SAVE).click();
+        log.info("Click Save Button");
+        click(SAVE_BUTTON);
     }
 
     public NewAccountModal createAccount(Account account) {
+        log.info("Creating account: {}", account.getName());
         return new NewAccountModal(driver)
                 .input(ACCOUNT_NAME.getLabel(), account.getName())
                 .input(PHONE.getLabel(), account.getPhone())
@@ -75,12 +96,17 @@ public class NewAccountModal extends BasePage {
                 .input(SIC_CODE.getLabel(), account.getSicCode())
                 .input(TICKER_SYMBOL.getLabel(), account.getTickerSymbol())
                 .input(FAX.getLabel(), account.getFax())
-                .input(ANNUAL_REVENUE.getLabel(), account.getAnnualRevenue())
                 .build();
     }
 
     public boolean isAccountCreated() {
-        wait.until(ExpectedConditions.visibilityOf(driver.findElement(SUCCESSFUL_CREATION_POPUP)));
-        return driver.findElement(SUCCESSFUL_CREATION_POPUP).isDisplayed();
+        try {
+            wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(SUCCESSFUL_CREATION_POPUP))));
+            log.info("NewAccount is created");
+        } catch (TimeoutException e) {
+            log.error(e.getMessage());
+            Assert.fail("NewAccount isn't created");
+        }
+        return driver.findElement(By.xpath(SUCCESSFUL_CREATION_POPUP)).isDisplayed();
     }
 }
